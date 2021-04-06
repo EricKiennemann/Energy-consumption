@@ -6,7 +6,7 @@ from constants import OPEN_DATA_TIMEOUT, OPEN_DATA_RETRIES
 import requests
 import os
 
-class Open_data(object):
+class IrisConsumption(object):
 
     def __init__(self, dept, year, dataset = 'conso-elec-gaz-annuelle-par-secteur-dactivite-agregee-iris', server = 'https://opendata.agenceore.fr/api' ):
         """initialise the Open_data class
@@ -74,13 +74,16 @@ class Open_data(object):
 
         return [record['fields'] for record in records]
 
+    def consumption_by_iris(self):
 
+        fields = self.get_fields()
+        consumption=dict()
+        for field in fields:
+            consumption[field['code_iris']] = field['consor']
+        return consumption
 
 if __name__ == '__main__':
 
 
-    energy = Open_data(75,2019)
-    fields = energy.get_fields()
-
-    for field in fields:
-        print(f"iris {field['code_iris']}, consumption :  {field['consor']}")
+    energy = IrisConsumption(75,2019)
+    print(energy.consumption_by_iris())
