@@ -76,10 +76,11 @@ class Open_data(object):
 
 
 
+if __name__ == '__main__':
 
 
-energy = Open_data(75,2019)
-fields = energy.get_fields()
+    energy = Open_data(75,2019)
+    fields = energy.get_fields()
 
-for field in fields:
-    print(f"iris {field['code_iris']}, consumption :  {field['consot']}")
+    for field in fields:
+        print(f"iris {field['code_iris']}, consumption :  {field['consor']}")
