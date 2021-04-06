@@ -2,6 +2,11 @@ import psycopg2
 from collections import defaultdict
 from datetime import datetime,date
 from constants import DB_OLD_DATE
+from open_data import IrisConsumption
+
+import shapely
+import shapely.wkt
+
 
 class Batiment(object):
 
@@ -31,12 +36,12 @@ class Batiment(object):
             select iris.code_iris,
 		    bat.date_app,
 		    bat.nb_logts,
-		    bat.geom2d2
+		    ST_AsText(bat.geom2d2)
             from public."BATIMENT" as bat
             JOIN public."IRIS_GE" AS iris
             ON ST_Contains(iris.geom, bat.geom)
             where (usage1 = 'Résidentiel' or usage2 = 'Résidentiel') and nb_logts > 0
-            and iris.iris = '6115'
+            --and iris.iris = '6115'
             """
         )
         rows = cur.fetchall()
@@ -46,7 +51,7 @@ class Batiment(object):
                 'iris'      : row[0],
                 'date_app'  : row[1],
                 'nb_housing'  : row[2],
-                'geom'      : row[3],
+                'geometry'      : shapely.wkt.loads(row[3]),
             } for row in rows
         ]
 
@@ -121,7 +126,28 @@ class Batiment(object):
                     bat_dispatch[row[0]]['c_old'] += row[2]
         return bat_dispatch
 
-    def get_batiments_consumption(self,consumption_by_housing_type,dict_dispatch):
+
+
+    def get_batiments_consumption(self):
+
+        consumption_by_housing_type = {
+            'h_new' : 23.5,
+            'h_old' : 26.0,
+            'c_new' : 13.0,
+            'c_old' : 17.0,
+        }
+
+        iris_consumption = IrisConsumption(75,2019)
+        dict_iris_consumption = iris_consumption.consumption_by_iris()
+
+        #batiment = Batiment("Energy")
+        dict_dispatch = self.housing_by_iris2()
+        for iris_code,dispatch in dict_dispatch.items():
+            dict_dispatch[iris_code]['ratio'] = ratio_for_iris(dispatch,consumption_by_housing_type,dict_iris_consumption[iris_code])
+
+        print(dict_dispatch)
+        #print(batiment.get_batiments_consumption(consumption_by_housing_type,dict_dispatch)[0])
+        #list_batiments = batiment.get_batiments_consumption(consumption_by_housing_type,dict_dispatch)
 
         for i,bat in enumerate(self.list_batiments):
             consumption = bat['nb_housing'] * consumption_by_housing_type[bat['type']] * dict_dispatch[bat['iris']]['ratio']
@@ -129,7 +155,15 @@ class Batiment(object):
 
         return self.list_batiments
 
-
+def ratio_for_iris(dispatch,consumption_by_housing_type,iris_consumption):
+    total_theo_consumption = 0
+    for key,number_housing in dispatch.items():
+        total_theo_consumption += number_housing * consumption_by_housing_type[key]
+    print(total_theo_consumption,iris_consumption)
+    if total_theo_consumption != 0:
+        return iris_consumption / total_theo_consumption
+    else:
+        return 0
 
 if __name__ == '__main__':
     base = Batiment("Energy")
