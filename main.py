@@ -57,5 +57,8 @@ if __name__ == '__main__':
     #bat_dict = dict(zip(gpd_consumption['id'], gpd_consumption['consumption']))
     #print(bat_dict)
 
+    myscale = (gpd_consumption['consumption'].quantile((0,0.1,0.75,0.9,0.98,0.99))).tolist()
+    print(myscale)
+
 
 

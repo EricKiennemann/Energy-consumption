@@ -24,6 +24,8 @@ import pandas as pd
 
 from database import Batiment
 
+from constants import PLOT_QUANTILE
+
 
 
 from branca.colormap import linear
@@ -37,6 +39,10 @@ def bat_plot():
 
     insee_coms = gpd_cons.insee_com.unique()
     print(insee_coms)
+
+    myscale = (gpd_cons['consumption'].quantile(PLOT_QUANTILE)).tolist()
+    print(myscale[-1])
+
 
     for insee_com in insee_coms:
         gpd_consumption = gpd_cons[gpd_cons.insee_com == insee_com]
@@ -62,34 +68,30 @@ def bat_plot():
         #start_coords = (48.8534 , 2.3488)
         centroid=gpd_consumption.geometry.centroid
 
-        m=folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=14, tiles='stamentoner')
-        colormap.caption = "Energy Consumption"
+        m=folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=15, tiles='stamentoner')
 
-        """
-        folium.GeoJson(
-            gpd_consumption[['id','geometry','consumption']],
-            zoom_on_click=True,
-            name="energy Consumption",
-            style_function= map_colors
-            tooltip=folium.features.Tooltip(fields=['id','consumption'],
-                                                aliases=['bat','Energy Consumption'],
+        choro = folium.Choropleth(
+            name=f"Energy consumption in {insee_com}",
+            geo_data=gpd_consumption[['id','geometry','consumption',"nb_housing"]],
+            data=gpd_consumption[gpd_consumption.consumption < myscale[-1]],
+            columns=["id", "consumption","nb_housing"],
+            key_on="feature.properties.id",
+            fill_color='YlGnBu',
+            #bins=[0, 5,10,15,20,25,30,50, 100, 1000],
+            threshold_scale=myscale,
+            legend_name = "Energy consumption in kWh/year/housing",
+            nan_fill_color="red",
+            font_size= '12px'
+        ).add_to(m)
+
+        choro.geojson.add_child(folium.features.GeoJsonTooltip(fields=['id','consumption','nb_housing'],
+                                                aliases=['Id','Energy Consumption (kWh/year/housing)','# housing'],
                                                 labels=True,
                                                 sticky=True,
                                                 toLocaleString=True)
-        ).add_to(m)
-        """
+)
 
-        folium.Choropleth(
-            geo_data=gpd_consumption[['id','geometry','consumption']],
-            data=gpd_consumption,
-            columns=["id", "consumption"],
-            key_on="feature.properties.id",
-            fill_color="YlGn",
-            bins=[0, 5,10,15,20,25,30,50, 100, 1000],
-
-        ).add_to(m)
-
-        #colormap.add_to(m)
+        folium.LayerControl(autoZIndex=False, collapsed=False).add_to(m)
 
         m.save(f"./output/index_{insee_com}.html")
 

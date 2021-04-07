@@ -117,7 +117,7 @@ class Batiment(object):
 
         for i,bat in enumerate(self.list_batiments):
             #consumption = bat['nb_housing'] * consumption_by_housing_type[bat['type']] * dict_dispatch[bat['iris']]['ratio']
-            consumption = consumption_by_housing_type[bat['type']] * dict_dispatch[bat['iris']]['ratio']
+            consumption = round(consumption_by_housing_type[bat['type']] * dict_dispatch[bat['iris']]['ratio'],2)
             self.list_batiments[i]['consumption'] = consumption
 
         return self.list_batiments
