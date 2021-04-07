@@ -1,6 +1,9 @@
 from database import Batiment
 import geopandas as gpd
 
+from branca.colormap import linear
+
+
 """
 def ratio_for_iris(dispatch,consumption_by_housing_type,dict_iris_consumption):
     total_theo_consumption = 0
@@ -37,7 +40,15 @@ if __name__ == '__main__':
     print(batiment.get_batiments_consumption()[0])
     list_batiments = batiment.get_batiments_consumption()
     gpd_consumption = gpd.GeoDataFrame(list_batiments)
-    print(gpd_consumption['geometry'][0:3])
+    #print(gpd_consumption[['id','geometry','consumption']].head(2))
+
+    colormap = linear.YlGn_09.scale(
+        gpd_consumption.consumption.min(), gpd_consumption.consumption.max()
+    )
+    #print(colormap([gpd_consumption.consumption[0:3]]))
+    print(gpd_consumption.consumption.min(), gpd_consumption.consumption.max())
+    #bat_dict = dict(zip(gpd_consumption['id'], gpd_consumption['consumption']))
+    #print(bat_dict)
 
 
 

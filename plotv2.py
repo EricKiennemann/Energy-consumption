@@ -29,11 +29,7 @@ from database import Batiment
 from branca.colormap import linear
 
 
-app = Flask(__name__)
-
-
-@app.route('/')
-def index():
+def bat_plot():
     batiment = Batiment("Energy")
     list_batiments = batiment.get_batiments_consumption()
     gpd_consumption = gpd.GeoDataFrame(list_batiments)
@@ -50,7 +46,7 @@ def index():
     'weight': 0.25,
     'fillOpacity': 0.5
 }
-    print(colormap)
+    #print(colormap)
 
     gpd_consumption.crs = {'init' :'epsg:4326'}
     #print(gpd_consumption)
@@ -65,8 +61,8 @@ def index():
         style_function= map_colors
     ).add_to(m)
 
-    return m._repr_html_()
+    m.save("index.html")
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    bat_plot()
