@@ -3,6 +3,9 @@ import geopandas as gpd
 
 from branca.colormap import linear
 
+import matplotlib
+import matplotlib.pyplot as plt
+
 
 """
 def ratio_for_iris(dispatch,consumption_by_housing_type,dict_iris_consumption):
@@ -47,9 +50,12 @@ if __name__ == '__main__':
     )
     #print(colormap([gpd_consumption.consumption[0:3]]))
     print(gpd_consumption.consumption.min(), gpd_consumption.consumption.max())
+    print(gpd_consumption[gpd_consumption.consumption > 100])
+
+    plt.hist(gpd_consumption.consumption)
+    plt.show()
     #bat_dict = dict(zip(gpd_consumption['id'], gpd_consumption['consumption']))
     #print(bat_dict)
-
 
 
 

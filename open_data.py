@@ -5,6 +5,7 @@ https://opendata.agenceore.fr/api/records/1.0/search/?dataset=conso-elec-gaz-ann
 from constants import OPEN_DATA_TIMEOUT, OPEN_DATA_RETRIES
 import requests
 import os
+from collections import defaultdict
 
 class IrisConsumption(object):
 
@@ -40,7 +41,8 @@ class IrisConsumption(object):
 
     def _build_base_request(self):
 
-        base_request = "records/1.0/search/?dataset={}&q=&rows=10000&facet=operateur&facet=annee&facet=filiere&facet=libelle_commune&facet=code_departement&facet=libelle_region&refine.code_departement={}&refine.annee={}".format(
+        #base_request = "records/1.0/search/?dataset={}&q=&rows=10000&facet=operateur&facet=annee&facet=filiere&facet=libelle_commune&facet=code_departement&facet=libelle_region&refine.code_departement={}&refine.annee={}".format(
+        base_request = "records/1.0/search/?dataset={}&q=&rows=10000&facet=annee&facet=libelle_commune&facet=code_departement&facet=libelle_region&refine.code_departement={}&refine.annee={}".format(
                         self.dataset, self.dept,self.year
         )
 
@@ -77,9 +79,9 @@ class IrisConsumption(object):
     def consumption_by_iris(self):
 
         fields = self.get_fields()
-        consumption=dict()
+        consumption=defaultdict(int)
         for field in fields:
-            consumption[field['code_iris']] = field['consor']
+            consumption[field['code_iris']] += field['consor']
         return consumption
 
 if __name__ == '__main__':

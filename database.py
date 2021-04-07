@@ -37,12 +37,13 @@ class Batiment(object):
 		    bat.date_app,
 		    bat.nb_logts,
 		    ST_AsText(bat.geom2d2),
-            bat.id
+            bat.id,
+            iris.insee_com
             from public."BATIMENT" as bat
             JOIN public."IRIS_GE" AS iris
             ON ST_Contains(iris.geom, bat.geom)
             where (usage1 = 'Résidentiel' or usage2 = 'Résidentiel') and nb_logts > 0
-            and iris.iris = '6115'
+            --and iris.insee_com = '75117'
             """
         )
         rows = cur.fetchall()
@@ -51,6 +52,7 @@ class Batiment(object):
             {
                 'id'        : row[4],
                 'iris'      : row[0],
+                'insee_com' : row[5],
                 'date_app'  : row[1],
                 'nb_housing'  : row[2],
                 'geometry'      : shapely.wkt.loads(row[3]),
@@ -102,6 +104,7 @@ class Batiment(object):
 
         iris_consumption = IrisConsumption(75,2019)
         dict_iris_consumption = iris_consumption.consumption_by_iris()
+        print("c iris : ",dict_iris_consumption['751124812'])
 
         #batiment = Batiment("Energy")
         dict_dispatch = self.housing_by_iris2()
@@ -113,7 +116,8 @@ class Batiment(object):
         #list_batiments = batiment.get_batiments_consumption(consumption_by_housing_type,dict_dispatch)
 
         for i,bat in enumerate(self.list_batiments):
-            consumption = bat['nb_housing'] * consumption_by_housing_type[bat['type']] * dict_dispatch[bat['iris']]['ratio']
+            #consumption = bat['nb_housing'] * consumption_by_housing_type[bat['type']] * dict_dispatch[bat['iris']]['ratio']
+            consumption = consumption_by_housing_type[bat['type']] * dict_dispatch[bat['iris']]['ratio']
             self.list_batiments[i]['consumption'] = consumption
 
         return self.list_batiments
