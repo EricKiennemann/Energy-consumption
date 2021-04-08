@@ -84,7 +84,7 @@ def bat_plot(list_batiments,insee,dept):
 
 
 if __name__ == '__main__':
-    dept = 98
+    dept = 75
     batiment = Batiment("Energy",dept)
     list_batiments = batiment.get_batiments_consumption()
     insee = batiment.get_insee()
