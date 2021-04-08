@@ -1,7 +1,7 @@
 import psycopg2
 from collections import defaultdict
 from datetime import datetime,date
-from constants import DB_OLD_DATE
+from constants import DB_OLD_DATE,YEAR_ENERGY_API
 from open_data import IrisConsumption
 
 import shapely
@@ -10,11 +10,12 @@ import shapely.wkt
 
 class Batiment(object):
 
-    def __init__(self, db_name, host = "localhost", user = "postgres", password = "postgres"):
+    def __init__(self, db_name, dept, host = "localhost", user = "postgres", password = "postgres"):
 
         self.db_name = db_name
         self.host = host
         self.user = user
+        self.dept = dept
 
         # TODO : password not in clear text
         self.password = password
@@ -25,27 +26,38 @@ class Batiment(object):
             user=self.user,
             password=self.password)
 
-        self.list_batiments = self._get_batiments()
+        #self.list_batiments = self._get_batiments()
+
+    def get_insee(self):
+        cur = self.conn.cursor()
+        str_sql = f"""
+            select distinct insee_com,nom_com from public."IRIS_GE_{self.dept}"
+            """
+        cur.execute(str_sql)
+        rows = cur.fetchall()
+        return rows
 
     def _get_batiments(self):
         # create a cursor
         cur = self.conn.cursor()
 
-        cur.execute(
-            """
+        str_sql = f"""
             select iris.code_iris,
 		    bat.date_app,
 		    bat.nb_logts,
-		    ST_AsText(bat.geom2d2),
+		    --ST_AsText(bat.geom2d2),
+            ST_AsText(ST_Force2D(bat.geom)),
             bat.id,
-            iris.insee_com
-            from public."BATIMENT" as bat
-            JOIN public."IRIS_GE" AS iris
+            iris.insee_com,
+            iris.nom_com
+            from public."BATIMENT_{self.dept}" as bat
+            JOIN public."IRIS_GE_{self.dept}" AS iris
             ON ST_Contains(iris.geom, bat.geom)
-            where (usage1 = 'Résidentiel' or usage2 = 'Résidentiel') and nb_logts > 0
-            --and iris.insee_com = '75117'
+            --where (usage1 = 'Résidentiel' or usage2 = 'Résidentiel') and nb_logts > 0
+            where (usage1 = 'RÃ©sidentiel' or usage2 = 'RÃ©sidentiel') and nb_logts > 0
             """
-        )
+
+        cur.execute(str_sql)
         rows = cur.fetchall()
 
         list_batiments = [
@@ -53,6 +65,7 @@ class Batiment(object):
                 'id'        : row[4],
                 'iris'      : row[0],
                 'insee_com' : row[5],
+                'nom_com'   : row[6],
                 'date_app'  : row[1],
                 'nb_housing'  : row[2],
                 'geometry'      : shapely.wkt.loads(row[3]),
@@ -65,6 +78,8 @@ class Batiment(object):
 
 
     def housing_by_iris2(self):
+        self.list_batiments = self._get_batiments()
+
         old_date = date.fromisoformat(DB_OLD_DATE)
         bat_dispatch = defaultdict(lambda: defaultdict(int))
         #rows = self._get_bat_iris()
@@ -102,9 +117,9 @@ class Batiment(object):
             'c_old' : 17.0,
         }
 
-        iris_consumption = IrisConsumption(75,2019)
+        iris_consumption = IrisConsumption(self.dept,YEAR_ENERGY_API)
         dict_iris_consumption = iris_consumption.consumption_by_iris()
-        print("c iris : ",dict_iris_consumption['751124812'])
+        #print("c iris : ",dict_iris_consumption['751124812'])
 
         #batiment = Batiment("Energy")
         dict_dispatch = self.housing_by_iris2()
@@ -133,5 +148,7 @@ def ratio_for_iris(dispatch,consumption_by_housing_type,iris_consumption):
         return 0
 
 if __name__ == '__main__':
-    base = Batiment("Energy")
-    print(base.housing_by_iris2)
+
+    base = Batiment("Energy",75)
+    print(base.get_insee())
+    #print(base.housing_by_iris2)

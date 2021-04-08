@@ -1,19 +1,3 @@
-""" flask_example.py
-
-    Required packages:
-    - flask
-    - folium
-
-    Usage:
-
-    Start the flask server by running:
-
-        $ python flask_example.py
-
-    And then head to http://127.0.0.1:5000/ in your browser to see the map displayed
-
-"""
-
 from flask import Flask
 
 import folium
@@ -25,26 +9,27 @@ import pandas as pd
 from database import Batiment
 
 from constants import PLOT_QUANTILE
+import os
 
 
 
 from branca.colormap import linear
 
 
-def bat_plot():
-    batiment = Batiment("Energy")
-    list_batiments = batiment.get_batiments_consumption()
+def bat_plot(list_batiments,insee,dept):
+
 
     gpd_cons = gpd.GeoDataFrame(list_batiments)
 
-    insee_coms = gpd_cons.insee_com.unique()
-    print(insee_coms)
+    #insee_coms = gpd_cons.insee_com.unique()
+    #insee_coms = gpd_cons.nom_com.unique()
+    #print(insee_coms)
 
     myscale = (gpd_cons['consumption'].quantile(PLOT_QUANTILE)).tolist()
     print(myscale[-1])
 
 
-    for insee_com in insee_coms:
+    for insee_com,nom_com in insee:
         gpd_consumption = gpd_cons[gpd_cons.insee_com == insee_com]
 
         bat_dict = dict(zip(gpd_consumption['id'], gpd_consumption['consumption']))
@@ -71,7 +56,7 @@ def bat_plot():
         m=folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=15, tiles='stamentoner')
 
         choro = folium.Choropleth(
-            name=f"Energy consumption in {insee_com}",
+            name=f"Energy consumption in {nom_com}",
             geo_data=gpd_consumption[['id','geometry','consumption',"nb_housing"]],
             data=gpd_consumption[gpd_consumption.consumption < myscale[-1]],
             columns=["id", "consumption","nb_housing"],
@@ -93,8 +78,14 @@ def bat_plot():
 
         folium.LayerControl(autoZIndex=False, collapsed=False).add_to(m)
 
-        m.save(f"./output/index_{insee_com}.html")
+        if not os.path.exists(f'./output/{dept}'):
+            os.makedirs(f'./output/{dept}')
+        m.save(f"./output/{dept}/{nom_com}.html")
 
 
 if __name__ == '__main__':
-    bat_plot()
+    dept = 98
+    batiment = Batiment("Energy",dept)
+    list_batiments = batiment.get_batiments_consumption()
+    insee = batiment.get_insee()
+    bat_plot(list_batiments,insee,dept)
