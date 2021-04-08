@@ -20,5 +20,5 @@ def createHTML(depts):
         f.write("</ul></body></html>\n")
 
 if __name__ == '__main__':
-    createHTML([75])
+    createHTML([75,92,93,94])
 

@@ -1,7 +1,8 @@
 import psycopg2
 from collections import defaultdict
 from datetime import datetime,date
-from constants import DB_OLD_DATE,YEAR_ENERGY_API
+from constants import DB_OLD_DATE,YEAR_ENERGY_API,DB_HOST, DB_USER, DB_PASSWORD,ENERGY_NEW_INDIVIDUAL,ENERGY_OLD_INDIVIDUAL,ENERGY_NEW_BUILDING,ENERGY_OLD_BUILDING
+
 from open_data import IrisConsumption
 
 import shapely
@@ -10,7 +11,7 @@ import shapely.wkt
 
 class Batiment(object):
 
-    def __init__(self, db_name, dept, host = "localhost", user = "postgres", password = "postgres"):
+    def __init__(self, db_name, dept, host = DB_HOST, user = DB_USER, password = DB_PASSWORD):
 
         self.db_name = db_name
         self.host = host
@@ -53,8 +54,8 @@ class Batiment(object):
             from public."BATIMENT_{self.dept}" as bat
             JOIN public."IRIS_GE_{self.dept}" AS iris
             ON ST_Contains(iris.geom, bat.geom)
-            --where (usage1 = 'Résidentiel' or usage2 = 'Résidentiel') and nb_logts > 0
-            where (usage1 = 'RÃ©sidentiel' or usage2 = 'RÃ©sidentiel') and nb_logts > 0
+            where (usage1 = 'Résidentiel' or usage2 = 'Résidentiel' or usage1 = 'RÃ©sidentiel' or usage2 = 'RÃ©sidentiel') and nb_logts > 0
+            --where (usage1 = 'RÃ©sidentiel' or usage2 = 'RÃ©sidentiel') and nb_logts > 0
             """
 
         cur.execute(str_sql)
@@ -111,10 +112,10 @@ class Batiment(object):
     def get_batiments_consumption(self):
 
         consumption_by_housing_type = {
-            'h_new' : 23.5,
-            'h_old' : 26.0,
-            'c_new' : 13.0,
-            'c_old' : 17.0,
+            'h_new' : ENERGY_NEW_INDIVIDUAL,
+            'h_old' : ENERGY_OLD_INDIVIDUAL,
+            'c_new' : ENERGY_NEW_BUILDING,
+            'c_old' : ENERGY_OLD_BUILDING,
         }
 
         iris_consumption = IrisConsumption(self.dept,YEAR_ENERGY_API)

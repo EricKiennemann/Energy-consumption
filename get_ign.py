@@ -7,7 +7,7 @@ import re
 
 import argparse
 
-from constants import TOPO_VER,TOPO_DATE,TOPO_TYPE,IRIS_VER,IRIS_DATE,IRIS_TYPE,INPUT_DIR
+from constants import TOPO_VER,TOPO_DATE,TOPO_TYPE,IRIS_VER,IRIS_DATE,IRIS_TYPE,INPUT_DIR,DB_HOST,DB_NAME,DB_PASSWORD,DB_PORT,DB_SCHEMA,DB_USER
 
 from pathlib import Path
 
@@ -18,12 +18,12 @@ def upload_to_db(shpfile,dept):
     :return: None
     """
 
-    dbname = 'Energy'
-    schema = 'public'
-    host = '0.0.0.0'
-    user = 'postgres'
-    password = 'postgres'
-    port = '5432'
+    dbname = DB_NAME
+    schema = DB_SCHEMA
+    host = DB_HOST
+    user = DB_USER
+    password = DB_PASSWORD
+    port = DB_PORT
 
     tablename = f'{os.path.splitext(os.path.basename(shpfile))}_{dept}'
 
@@ -122,10 +122,10 @@ if __name__ == '__main__':
         #unzip(f'input/7z/{dept}/iris.7z','IRIS_GE.','output/tmp')
 
         #upload topo file into postgis db
-        filepath =  Path('./output/tmp/').rglob('BATIMENT.SHP'):
+        filepath =  Path('./output/tmp/').rglob('BATIMENT.SHP')
         upload_to_db(filepath[0],dept)
 
         #upload iris file into postgis db
-        filepath =  Path('./output/tmp/').rglob('IRIS_GE.SHP'):
+        filepath =  Path('./output/tmp/').rglob('IRIS_GE.SHP')
         upload_to_db(filepath[0],dept)
 
