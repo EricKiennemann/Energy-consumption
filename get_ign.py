@@ -25,12 +25,12 @@ def upload_to_db(shpfile,dept):
     password = DB_PASSWORD
     port = DB_PORT
 
-    tablename = f'{os.path.splitext(os.path.basename(shpfile))}_{dept}'
+    tablename = f'{os.path.splitext(os.path.basename(shpfile))[0]}_{dept}'.upper()
 
     # https://gdal.org/drivers/vector/pg.html
+
     command = f"""export PGCLIENTENCODING=LATIN1 && ogr2ogr -f "PostgreSQL" PG:"host={host} dbname={dbname} user={user} password={password} port={port}" "{shpfile}" -nln {schema}.{tablename} -lco geometry_name=geom -lco precision=NO -nlt promote_to_multi -s_srs epsg:2154 -t_srs epsg:4326"""
 
-    #print(command)
     os.system(command)
 
 def get_ftp_file(server,user,password,directory,filename,dept,filedest):
@@ -106,26 +106,30 @@ if __name__ == '__main__':
         filename = ign_topo_filename(dept)
         print(directory)
         print(filename)
-        #get_ftp_file('ftp3.ign.fr','BDTOPO_V3_NL_ext','Ohp3quaz2aideel4',directory,filename,dept,"topo.7z")
+        get_ftp_file('ftp3.ign.fr','BDTOPO_V3_NL_ext','Ohp3quaz2aideel4',directory,filename,dept,"topo.7z")
 
         # connect to ftp ign for iris files and get 7z file
         directory = ign_iris_directory(dept)
         filename = ign_iris_filename(dept)
         print(directory)
         print(filename)
-        #get_ftp_file('ftp3.ign.fr','Iris_GE_ext','eeLoow1gohS1Oot9',directory,filename,dept,"iris.7z")
+        get_ftp_file('ftp3.ign.fr','Iris_GE_ext','eeLoow1gohS1Oot9',directory,filename,dept,"iris.7z")
 
         # unzip topo file
-        #unzip(f'input/7z/{dept}/topo.7z','BATIMENT.','output/tmp')
+        unzip(f'input/7z/{dept}/topo.7z','BATIMENT.','output/tmp')
 
         # unzip iris file
-        #unzip(f'input/7z/{dept}/iris.7z','IRIS_GE.','output/tmp')
+        unzip(f'input/7z/{dept}/iris.7z','IRIS_GE.','output/tmp')
 
         #upload topo file into postgis db
         filepath =  Path('./output/tmp/').rglob('BATIMENT.SHP')
-        upload_to_db(filepath[0],dept)
+        list_filepath = [f for f in filepaths]
+        print(list_filepath[0])
+        upload_to_db(list_filepath[0],dept)
 
         #upload iris file into postgis db
-        filepath =  Path('./output/tmp/').rglob('IRIS_GE.SHP')
-        upload_to_db(filepath[0],dept)
+        filepaths =  Path('./output/tmp/').rglob('IRIS_GE.SHP')
+        list_filepath = [f for f in filepaths]
+        print(list_filepath[0])
+        upload_to_db(list_filepath[0],dept)
 
