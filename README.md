@@ -14,6 +14,9 @@ Up to know, this github repository is private and will stay private unless you a
 I will now describe the main principles and the workflow I have build.
 ## Important notice
 I have build this project with the idea to make it as open and re usable as possible. But I consider this project as a Proof of Concept, so a lot of shortcuts have been taken and the tests has been focussed on the defined perimeter
+
+Use the file requirements.txt, to import the needed python libraries : "pip install -r requirements.txt"
+
 ## Main steps of the workflow and technical choices
 All the code is in Python and I have used a PostgeSql/PostGis database to store the data and do geographical computations. For map display the folium library has been used.
 ## Geographical data storage
