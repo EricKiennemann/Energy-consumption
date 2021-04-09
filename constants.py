@@ -1,5 +1,7 @@
-OPEN_DATA_TIMEOUT = 5
-OPEN_DATA_RETRIES = 3
+API_OPEN_DATA_TIMEOUT = 5
+API_OPEN_DATA_RETRIES = 3
+API_OPENDATA_DATASET = 'conso-elec-gaz-annuelle-par-secteur-dactivite-agregee-iris'
+API_OPENDATA_SERVER = 'https://opendata.agenceore.fr/api'
 DB_OLD_DATE = '1975-01-01'
 PLOT_QUANTILE  =(0,0.1,0.75,0.9,0.98,0.99,0.995)
 YEAR_ENERGY_API  = 2019
@@ -23,5 +25,14 @@ DB_HOST = "localhost"
 DB_USER = "postgres"
 DB_PASSWORD = "postgres" #TODO hide the password
 DB_PORT = "5432"
+
+FTP_TOPO_SERVER = 'ftp3.ign.fr'
+FTP_TOPO_USER = 'BDTOPO_V3_NL_ext'
+FTP_TOPO_PASSWORD = 'Ohp3quaz2aideel4'
+
+FTP_IRIS_SERVER = 'ftp3.ign.fr'
+FTP_IRIS_USER = 'Iris_GE_ext'
+FTP_IRIS_PASSWORD = 'eeLoow1gohS1Oot9'
+
 
 INPUT_DIR = 'input'

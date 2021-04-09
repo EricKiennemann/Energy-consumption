@@ -27,7 +27,6 @@ class Batiment(object):
             user=self.user,
             password=self.password)
 
-        #self.list_batiments = self._get_batiments()
 
     def get_insee(self):
         cur = self.conn.cursor()
@@ -46,7 +45,6 @@ class Batiment(object):
             select iris.code_iris,
 		    bat.date_app,
 		    bat.nb_logts,
-		    --ST_AsText(bat.geom2d2),
             ST_AsText(ST_Force2D(bat.geom)),
             bat.id,
             iris.insee_com,
@@ -55,7 +53,6 @@ class Batiment(object):
             JOIN public."IRIS_GE_{self.dept}" AS iris
             ON ST_Contains(iris.geom, bat.geom)
             where (usage1 = 'Résidentiel' or usage2 = 'Résidentiel' or usage1 = 'RÃ©sidentiel' or usage2 = 'RÃ©sidentiel') and nb_logts > 0
-            --where (usage1 = 'RÃ©sidentiel' or usage2 = 'RÃ©sidentiel') and nb_logts > 0
             """
 
         cur.execute(str_sql)
@@ -83,7 +80,7 @@ class Batiment(object):
 
         old_date = date.fromisoformat(DB_OLD_DATE)
         bat_dispatch = defaultdict(lambda: defaultdict(int))
-        #rows = self._get_bat_iris()
+
         for i,bat in enumerate(self.list_batiments):
             if bat['date_app'] is None:
                 date_app = old_date
@@ -91,14 +88,12 @@ class Batiment(object):
                 date_app = bat['date_app']
             iris = bat['iris']
             if bat['nb_housing'] == 1:
-                #if datetime.strptime(row[1], '%Y-%m-%d %H:%M:%S') > old_date:
                 if date_app > old_date:
                     bat_dispatch[iris]['h_new'] +=1
                     self.list_batiments[i]['type'] = 'h_new'
                 else:
                     bat_dispatch[iris]['h_old'] += 1
                     self.list_batiments[i]['type'] = 'h_old'
-            #elif datetime.strptime(row[1], '%Y-%m-%d %H:%M:%S') > old_date:
             elif date_app > old_date:
                     bat_dispatch[iris]['c_new'] += bat['nb_housing']
                     self.list_batiments[i]['type'] = 'c_new'
@@ -120,19 +115,13 @@ class Batiment(object):
 
         iris_consumption = IrisConsumption(self.dept,YEAR_ENERGY_API)
         dict_iris_consumption = iris_consumption.consumption_by_iris()
-        #print("c iris : ",dict_iris_consumption['751124812'])
 
-        #batiment = Batiment("Energy")
         dict_dispatch = self.housing_by_iris2()
         for iris_code,dispatch in dict_dispatch.items():
             dict_dispatch[iris_code]['ratio'] = ratio_for_iris(dispatch,consumption_by_housing_type,dict_iris_consumption[iris_code])
 
-        #print(dict_dispatch)
-        #print(batiment.get_batiments_consumption(consumption_by_housing_type,dict_dispatch)[0])
-        #list_batiments = batiment.get_batiments_consumption(consumption_by_housing_type,dict_dispatch)
 
         for i,bat in enumerate(self.list_batiments):
-            #consumption = bat['nb_housing'] * consumption_by_housing_type[bat['type']] * dict_dispatch[bat['iris']]['ratio']
             consumption = round(consumption_by_housing_type[bat['type']] * dict_dispatch[bat['iris']]['ratio'],2)
             self.list_batiments[i]['consumption'] = consumption
 
@@ -142,7 +131,6 @@ def ratio_for_iris(dispatch,consumption_by_housing_type,iris_consumption):
     total_theo_consumption = 0
     for key,number_housing in dispatch.items():
         total_theo_consumption += number_housing * consumption_by_housing_type[key]
-    #print(total_theo_consumption,iris_consumption)
     if total_theo_consumption != 0:
         return iris_consumption / total_theo_consumption
     else:
@@ -152,4 +140,3 @@ if __name__ == '__main__':
 
     base = Batiment("Energy",75)
     print(base.get_insee())
-    #print(base.housing_by_iris2)

@@ -2,14 +2,14 @@
 https://opendata.agenceore.fr/api/records/1.0/search/?dataset=conso-elec-gaz-annuelle-par-secteur-dactivite-agregee-iris&q=&rows=10000&facet=operateur&facet=annee&facet=filiere&facet=libelle_commune&facet=code_departement&facet=libelle_region&refine.code_departement=75&refine.annee=2019
 """
 
-from constants import OPEN_DATA_TIMEOUT, OPEN_DATA_RETRIES
+from constants import API_OPEN_DATA_TIMEOUT, API_OPEN_DATA_RETRIES,API_OPENDATA_DATASET,API_OPENDATA_SERVER
 import requests
 import os
 from collections import defaultdict
 
 class IrisConsumption(object):
 
-    def __init__(self, dept, year, dataset = 'conso-elec-gaz-annuelle-par-secteur-dactivite-agregee-iris', server = 'https://opendata.agenceore.fr/api' ):
+    def __init__(self, dept, year, dataset = API_OPENDATA_DATASET, server = API_OPENDATA_SERVER ):
         """initialise the Open_data class
 
         Parameters
@@ -28,20 +28,19 @@ class IrisConsumption(object):
         if not self.server:
             raise ValueError("No osrm server given")
 
-        self.timeout = OPEN_DATA_TIMEOUT
+        self.timeout = API_OPEN_DATA_TIMEOUT
 
         # Session definition
         self.session = requests.Session()
         self.session.mount(
             "https://",
             requests.adapters.HTTPAdapter(
-                max_retries=OPEN_DATA_RETRIES
+                max_retries=API_OPEN_DATA_RETRIES
             ),
         )
 
     def _build_base_request(self):
 
-        #base_request = "records/1.0/search/?dataset={}&q=&rows=10000&facet=operateur&facet=annee&facet=filiere&facet=libelle_commune&facet=code_departement&facet=libelle_region&refine.code_departement={}&refine.annee={}".format(
         base_request = "records/1.0/search/?dataset={}&q=&rows=10000&facet=annee&facet=libelle_commune&facet=code_departement&facet=libelle_region&refine.code_departement={}&refine.annee={}".format(
                         self.dataset, self.dept,self.year
         )

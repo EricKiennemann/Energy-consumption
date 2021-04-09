@@ -27,6 +27,13 @@ This program can be run at command line with the syntax :"python get_ign.py -d 7
 The department list can be change, even if I have done no test with other departments.
 
 The constant.py file contains variable that can be changed if the name, version, ... of the files on the IGN ftp server change :
+
+* FTP_TOPO_SERVER = 'ftp3.ign.fr'
+* FTP_TOPO_USER = 'BDTOPO_V3_NL_ext'
+* FTP_TOPO_PASSWORD = 'Ohp3quaz2aideel4'
+* FTP_IRIS_SERVER = 'ftp3.ign.fr'
+* FTP_IRIS_USER = 'Iris_GE_ext'
+* FTP_IRIS_PASSWORD = 'eeLoow1gohS1Oot9'
 * TOPO_DATE = '2020-12-15'
 * TOPO_VER = 'BDTOPO_3-0_'
 * TOPO_TYPE = 'TOUSTHEMES_SHP_LAMB93'
@@ -68,8 +75,10 @@ A Postgis query is done to :
 * process the data inside each Iris to dispatch the energy consumption from the Iris level to the building level using the repartitions keys define in the subject
 
 Variables that can be changed in constants.py file :
-* OPEN_DATA_TIMEOUT = 5 # for opendata api access
-* OPEN_DATA_RETRIES = 3 # for opendata api access
+* API_OPENDATA_DATASET = 'conso-elec-gaz-annuelle-par-secteur-dactivite-agregee-iris'
+* API_OPENDATA_SERVER = 'https://opendata.agenceore.fr/api'
+* API_OPEN_DATA_TIMEOUT = 5 # for opendata api access
+* API_OPEN_DATA_RETRIES = 3 # for opendata api access
 * YEAR_ENERGY_API = 2019 # date used to query the opendata api
 * DB_OLD_DATE = '1975-01-01' # pivot date that changes the energy consumption of buildings
 * ENERGY_NEW_INDIVIDUAL = 23.5 # in MWh/year
