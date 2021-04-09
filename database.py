@@ -31,7 +31,7 @@ class Batiment(object):
     def get_insee(self):
         cur = self.conn.cursor()
         str_sql = f"""
-            select distinct insee_com,nom_com from public."IRIS_GE_{self.dept}"
+            select distinct insee_com,nom_com from public."iris_ge_{self.dept}"
             """
         cur.execute(str_sql)
         rows = cur.fetchall()
@@ -49,8 +49,8 @@ class Batiment(object):
             bat.id,
             iris.insee_com,
             iris.nom_com
-            from public."BATIMENT_{self.dept}" as bat
-            JOIN public."IRIS_GE_{self.dept}" AS iris
+            from public."batiment_{self.dept}" as bat
+            JOIN public."iris_ge_{self.dept}" AS iris
             ON ST_Contains(iris.geom, bat.geom)
             where (usage1 = 'Résidentiel' or usage2 = 'Résidentiel' or usage1 = 'RÃ©sidentiel' or usage2 = 'RÃ©sidentiel') and nb_logts > 0
             """
