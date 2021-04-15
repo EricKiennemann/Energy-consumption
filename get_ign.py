@@ -112,25 +112,25 @@ if __name__ == '__main__':
         get_ftp_file(FTP_IRIS_SERVER,FTP_IRIS_USER,FTP_IRIS_PASSWORD,directory,filename,dept,"iris.7z")
 
         # unzip topo file
-        unzip(f'input/7z/{dept}/topo.7z','BATIMENT.','output/tmp/7z')
+        unzip(f'input/7z/{dept}/topo.7z','BATIMENT.','tmp/7z')
 
         # unzip iris file
-        unzip(f'input/7z/{dept}/iris.7z','IRIS_GE.','output/tmp/7z')
+        unzip(f'input/7z/{dept}/iris.7z','IRIS_GE.','tmp/7z')
 
         #upload topo file into postgis db
-        filepaths =  Path('./output/tmp/').rglob('BATIMENT.shp')
+        filepaths =  Path('./tmp/').rglob('BATIMENT.shp')
         list_filepath = [f for f in filepaths]
         print(list_filepath[0])
         upload_to_db(list_filepath[0],dept)
 
 
         #upload iris file into postgis db
-        filepaths =  Path('./output/tmp/').rglob('IRIS_GE.SHP')
+        filepaths =  Path('./tmp/').rglob('IRIS_GE.SHP')
         list_filepath = [f for f in filepaths]
         print(list_filepath[0])
         upload_to_db(list_filepath[0],dept)
 
         #empty tmp directory
-        shutil.rmtree('output/tmp/7z')
+        shutil.rmtree('tmp/7z')
 
 

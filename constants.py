@@ -36,3 +36,4 @@ FTP_IRIS_PASSWORD = 'eeLoow1gohS1Oot9'
 
 
 INPUT_DIR = 'input'
+OUTPUT_DIR = 'output'

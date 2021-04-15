@@ -134,3 +134,6 @@ dmypy.json
 #output
 output/
 input/
+
+#jupyter notebook
+*.ipynb
