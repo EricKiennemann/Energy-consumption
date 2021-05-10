@@ -7,11 +7,11 @@ The result of my work is in two parts :
 * Generated Maps
     - using Kepler.gl library : https://console.cloud.google.com/storage/browser/_details/energy-ghg/EnergyConsumption_75_92_93_94.html?project=lateral-vision-307410
 
-    [Energy Consumption Visualization with Kepler.gl](./pictures/kepler_gl.png)
+    ![Energy Consumption Visualization with Kepler.gl](./pictures/kepler_gl.png)
 
     - using folium Python library : https://storage.googleapis.com/energy-ghg/index.html
 
-    [Energy Consumption Visualization with folium](./pictures/folium.png)
+    ![Energy Consumption Visualization with folium](./pictures/folium.png)
 
     I have splited the maps by "insee commune code" to make it not too heavy to display and to use. The index.html is a very rough index and could be easily made more "nice-looking". This folder has public access.
 
