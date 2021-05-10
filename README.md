@@ -7,17 +7,17 @@ The result of my work is in two parts :
 * Generated Maps
     - using Kepler.gl library : https://console.cloud.google.com/storage/browser/_details/energy-ghg/EnergyConsumption_75_92_93_94.html?project=lateral-vision-307410
 
-    [Energy Consumption Visualization with Kepler.gl](./pictures/kepler_gl.png)
+    ![Energy Consumption Visualization with Kepler.gl](./pictures/kepler_gl.png)
 
     - using folium Python library : https://storage.googleapis.com/energy-ghg/index.html
 
-    [Energy Consumption Visualization with folium](./pictures/folium.png)
+    ![Energy Consumption Visualization with folium](./pictures/folium.png)
 
-    I have splited the maps by "insee commune code" to make it not too heavy to display and to use. The index.html is a very rough index and could be easily made more "nice-looking". This folder has public access.
+    I have splited the maps by "insee commune code" to make it not too heavy to display and to use.
 
 * The programs and setup used to generate those maps are in this github repository.
 
-I will now describe the main principles and the workflow I have build.
+
 ## Important notice
 I have build this project with the idea to make it as open and re usable as possible.
 
@@ -104,10 +104,10 @@ Done in classification.py file
 
 * query the opendata API to get energy consumption data for each department (this call is done dynamically)
 * process the data inside each Iris to dispatch the energy consumption from the Iris level to the building level using the repartitions keys :
- - for housings in individual buildings build before 1975 : 26 MWh/year
- - for housings in individual buildings build after 1975 : 23.5 MWh/year
- - for housings in collective buildings build before 1975 : 17 Mwh/year
- - for housings in collective buildings build after 1975 : 13 MWh/year
+    - for housings in individual buildings build before 1975 : 26 MWh/year
+    - for housings in individual buildings build after 1975 : 23.5 MWh/year
+    - for housings in collective buildings build before 1975 : 17 Mwh/year
+    - for housings in collective buildings build after 1975 : 13 MWh/year
 
 Variables that can be changed in constants.py file :
 * API_OPENDATA_DATASET = 'conso-elec-gaz-annuelle-par-secteur-dactivite-agregee-iris'
