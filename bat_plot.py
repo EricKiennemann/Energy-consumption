@@ -69,7 +69,7 @@ def bat_plot_kepler(list_batiments,list_dept):
     map2=KeplerGl()
     map2.add_data(gpd_data,name="Energy_Consumption")
     config = get_config()
-    filename = f"EnergyConsumption{'_'.join([str(dept) for dept in list_dept])}.html"
+    filename = f"EnergyConsumption_{'_'.join([str(dept) for dept in list_dept])}.html"
     filepath = os.path.join(OUTPUT_DIR,filename)
     map2.save_to_html(file_name=filepath,config = config)
 

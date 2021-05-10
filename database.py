@@ -37,6 +37,31 @@ class Batiment(object):
         rows = cur.fetchall()
         return rows
 
+    def _get_data_classification(self):
+        # create a cursor
+        cur = self.conn.cursor()
+
+        str_sql = f"""
+            SELECT id,nature,
+            leger,
+            etat,
+            date_app,
+            nb_logts,
+            nb_etages,
+            mat_murs,
+            mat_toits,
+            origin_bat
+            FROM public.batiment_{self.dept}
+            where (usage1 = 'RÃ©sidentiel' or usage2 = 'RÃ©sidentiel') and nb_logts <> 0
+        """
+
+        cur.execute(str_sql)
+        rows = cur.fetchall()
+
+        cur.close()
+
+        return rows
+
     def _get_batiments(self):
         # create a cursor
         cur = self.conn.cursor()

@@ -22,17 +22,17 @@ IRIS_TYPE = 'SHP_LAMB93'
 DB_NAME = "Energy"
 DB_SCHEMA = "public"
 DB_HOST = "localhost"
-DB_USER = "postgres"
-DB_PASSWORD = "postgres" #TODO hide the password
+DB_USER = 'to be moved to .env file'            #TODO
+DB_PASSWORD = 'to be moved to .env file'        #TODO
 DB_PORT = "5432"
 
 FTP_TOPO_SERVER = 'ftp3.ign.fr'
-FTP_TOPO_USER = 'BDTOPO_V3_NL_ext'
-FTP_TOPO_PASSWORD = 'Ohp3quaz2aideel4'
+FTP_TOPO_USER = 'to be moved to .env file'      #TODO
+FTP_TOPO_PASSWORD = 'to be moved to .env file'  #TODO
 
 FTP_IRIS_SERVER = 'ftp3.ign.fr'
-FTP_IRIS_USER = 'Iris_GE_ext'
-FTP_IRIS_PASSWORD = 'eeLoow1gohS1Oot9'
+FTP_IRIS_USER = 'to be moved to .env file'      #TODO
+FTP_IRIS_PASSWORD = 'to be moved to .env file'  #TODO
 
 
 INPUT_DIR = 'input'

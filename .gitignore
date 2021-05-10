@@ -136,4 +136,4 @@ output/
 input/
 
 #jupyter notebook
-*.ipynb
+#*.ipynb
