@@ -8,7 +8,7 @@ def is_html_file(filename):
 def createHTML(depts):
     with open("./output/index.html", "w") as f:
         f.write("<html><body><ul>\n")
-        f.write(f"<H1>Energy consumption by city</H1>\n")
+        f.write(f"<H1>List of cities</H1>\n")
         for dept in depts:
             f.write(f"<H2>{dept}</H2>\n")
             directories = os.listdir(f"./output/{dept}")
