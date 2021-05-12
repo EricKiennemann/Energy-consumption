@@ -10,7 +10,7 @@ def createHTML(depts):
         f.write("<html><body><ul>\n")
         f.write(f"<H1>List of cities</H1>\n")
         for dept in depts:
-            f.write(f"<H1>{dept}</H1>\n")
+            f.write(f"<H2>{dept}</H2>\n")
             directories = os.listdir(f"./output/{dept}")
             print(directories)
             for filename in directories:
