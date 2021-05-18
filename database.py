@@ -1,7 +1,7 @@
 import psycopg2
 from collections import defaultdict
 from datetime import datetime,date
-from constants import DB_OLD_DATE,YEAR_ENERGY_API,DB_HOST, DB_USER, DB_PASSWORD,ENERGY_NEW_INDIVIDUAL,ENERGY_OLD_INDIVIDUAL,ENERGY_NEW_BUILDING,ENERGY_OLD_BUILDING
+from constants import CONSTRUCTION_OLD_DATE, CONSTRUCTION_OLD_DATE,YEAR_ENERGY_API,DB_HOST, DB_USER, DB_PASSWORD,ENERGY_NEW_INDIVIDUAL,ENERGY_OLD_INDIVIDUAL,ENERGY_NEW_BUILDING,ENERGY_OLD_BUILDING
 
 from open_data import IrisConsumption
 
@@ -103,7 +103,7 @@ class Batiment(object):
     def housing_by_iris2(self):
         self.list_batiments = self._get_batiments()
 
-        old_date = date.fromisoformat(DB_OLD_DATE)
+        old_date = CONSTRUCTION_OLD_DATE
         bat_dispatch = defaultdict(lambda: defaultdict(int))
 
         for i,bat in enumerate(self.list_batiments):
